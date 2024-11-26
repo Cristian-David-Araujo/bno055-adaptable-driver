@@ -14,5 +14,10 @@
     "idf.portWin": "COM12",
     "idf.pythonBinPathWin": "C:\\Users\\Crist\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe",
     "idf.toolsPathWin": "C:\\Users\\Crist\\.espressif",
-    "idf.flashType": "UART"
+    "idf.flashType": "UART",
+    "files.associations": {
+        "*.vhd": "shellscript",
+        "*.c": "c",
+        "platform_esp32s3.h": "c"
+    }
 }
