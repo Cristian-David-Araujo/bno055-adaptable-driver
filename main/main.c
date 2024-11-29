@@ -5,7 +5,9 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include <inttypes.h>
+
 #include "sdkconfig.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -18,14 +20,12 @@
 #include "platform_esp32s3.h"
 
 // UART configuration structure
-uart_t uart_config;
 
 
 
 void app_main(void)
 {
-    uart_init(&uart_config, 115200, 1024, 17, 18, UART_PIN_NO_USE, UART_PIN_NO_USE);
-
-    
+    BNO055_t bno055;
+    BNO055_Init(&bno055, 17, 18);
     
 }

@@ -18,6 +18,11 @@
     "files.associations": {
         "*.vhd": "shellscript",
         "*.c": "c",
-        "platform_esp32s3.h": "c"
+        "platform_esp32s3.h": "c",
+        "freertos.h": "c",
+        "esp_system.h": "c",
+        "variant": "c",
+        "*.inc": "c",
+        "cstring": "c"
     }
 }
