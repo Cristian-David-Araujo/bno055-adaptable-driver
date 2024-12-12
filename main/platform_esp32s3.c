@@ -35,13 +35,13 @@ static uart_port_t find_uart_num(uint8_t gpio_tx, uint8_t gpio_rx, uint8_t gpio_
     return UART_NUM_2;
 }
 
-bool uart_init(uart_t *uart_config, uint32_t baud_rate, uint16_t buffer_size, int8_t gpio_tx, int8_t gpio_rx, int8_t gpio_rts, int8_t gpio_cts)
+int uart_init(uart_t *uart_config, uint32_t baud_rate, uint16_t buffer_size, int8_t gpio_tx, int8_t gpio_rx, int8_t gpio_rts, int8_t gpio_cts)
 {
     // Check if the UART gpio pins are valid
     if (gpio_tx == UART_PIN_NO_USE || gpio_rx == UART_PIN_NO_USE)
     {
         ESP_LOGE("UART_INIT", "Invalid UART TX or RX pin");
-        return false;
+        return -1;
     }
     
 
@@ -77,25 +77,32 @@ bool uart_init(uart_t *uart_config, uint32_t baud_rate, uint16_t buffer_size, in
     if (uart_param_config(uart_num, &(uart_config->uart_config)) != ESP_OK)
     {
         ESP_LOGE("UART_INIT", "Failed to configure UART parameters");
-        return false;
+        return -1;
     }
 
     // Configure UART pins
     if (uart_set_pin(uart_num, gpio_tx, gpio_rx, gpio_rts, gpio_cts) != ESP_OK)
     {
         ESP_LOGE("UART_INIT", "Failed to configure UART pins");
-        return false;
+        return -1;
     }
 
     // Install UART driver
     if (uart_driver_install(uart_num, buffer_size * 2, 0, 0, NULL, 0) != ESP_OK)
     {
         ESP_LOGE("UART_INIT", "Failed to install UART driver");
-        return false;
+        return -1;
     }
 
-    ESP_LOGI("UART_INIT", "UART initialized successfully");
-    return true;
+    // Clear UART buffer
+    if (uart_flush(uart_num) != ESP_OK)
+    {
+        ESP_LOGE("UART_INIT", "Failed to flush UART buffer");
+        return -1;
+    }
+
+    // ESP_LOGI("UART_INIT", "UART initialized successfully");
+    return 0;
 }
 
 int uart_write(uart_t *uart_config, const uint8_t *data, size_t length)
@@ -114,26 +121,26 @@ int uart_write(uart_t *uart_config, const uint8_t *data, size_t length)
         return -1; // Error
     }
 
-    ESP_LOGI("UART_WRITE", "Successfully wrote %d bytes to UART.", bytes_written);
+    // ESP_LOGI("UART_WRITE", "Successfully wrote %d bytes to UART.", bytes_written);
     return bytes_written;
 }
 
 int uart_read(uart_t *uart_config, uint8_t *buffer, size_t length, int timeout_ms)
 {
     if (uart_config == NULL || buffer == NULL || length == 0) {
-        ESP_LOGD("UART_READ", "Invalid parameters.");
+        ESP_LOGE("UART_READ", "Invalid parameters.");
         return -1; // Error
     }
-
+    
     // Attempt to read data from the UART
     int bytes_read = uart_read_bytes(uart_config->uart_num, buffer, length, timeout_ms / portTICK_PERIOD_MS);
 
     // Check for errors
     if (bytes_read < 0) {
-        ESP_LOGD("UART_READ", "Failed to read data from UART.");
+        ESP_LOGE("UART_READ", "Failed to read data from UART.");
         return -1; // Error
     }
 
-    ESP_LOGD("UART_READ", "Successfully read %d bytes from UART.", bytes_read);
+    // ESP_LOGDI"UART_READ", "Successfully read %d bytes from UART.", bytes_read);
     return bytes_read;
 }

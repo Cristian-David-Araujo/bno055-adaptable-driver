@@ -258,6 +258,10 @@
 #define BNO055_TEMP_UNIT_CELSIUS                   (0x00)
 #define BNO055_TEMP_UNIT_FAHRENHEIT                (0x01)
 
+/*Orientation unit*/
+#define BNO055_WIN_ORIENTATION                     (0x00)
+#define BNO055_ANDROID_ORIENTATION                 (0x01)
+
 /*Accel division factor*/
 #define BNO055_ACCEL_DIV_MSQ                       (100.0)
 #define BNO055_ACCEL_DIV_MG                        (1.0)

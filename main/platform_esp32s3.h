@@ -60,7 +60,7 @@ typedef struct {
  * 
  * @return true if UART initialization was successful and false if UART initialization failed
  */
-bool uart_init(uart_t *uart_config, uint32_t baud_rate, uint16_t buffer_size, int8_t gpio_tx, int8_t gpio_rx, int8_t gpio_rts, int8_t gpio_cts);
+int uart_init(uart_t *uart_config, uint32_t baud_rate, uint16_t buffer_size, int8_t gpio_tx, int8_t gpio_rx, int8_t gpio_rts, int8_t gpio_cts);
 
 /**
  * @brief Initialize UART peripheral with default configuration

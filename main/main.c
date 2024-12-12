@@ -25,7 +25,36 @@
 
 void app_main(void)
 {
+    int8_t success = -1;
     BNO055_t bno055;
-    BNO055_Init(&bno055, 17, 18);
+    
+    success = BNO055_Init(&bno055, 17, 18);
+
+    float ax, ay, az;
+    float gx, gy, gz;
+    float yaw, pitch, roll;
+
+    while (true)
+    {
+        // Read Accelerometer data
+        // BNO055_GetAcceleration(&bno055, &ax, &ay, &az);
+
+        // printf("Accelerometer data: X: %f, Y: %f, Z: %f\n", ax, ay, az);
+        
+        // Read Gyroscope data
+        // BNO055_GetGyro(&bno055, &gx, &gy, &gz);
+
+        // printf("Gyroscope data: X: %f, Y: %f, Z: %f\n", gx, gy, gz);
+
+        // Read Euler angles
+        // Yaw : Rotation around the Z-axis
+        // Pitch : Rotation around the Y-axis
+        // Roll : Rotation around the X-axis
+        BNO055_GetEulerAngles(&bno055, &yaw, &pitch, &roll);
+
+        printf("Euler angles: Roll: %f, Pitch: %f, Yaw: %f\n", roll, pitch, yaw);
+        vTaskDelay(200 / portTICK_PERIOD_MS);
+    }
+    
     
 }
