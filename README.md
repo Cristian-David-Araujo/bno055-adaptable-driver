@@ -6,6 +6,8 @@ An example demonstrating how to use the BNO055 driver with the x-IMU3 GUI is ava
 
 ![Example Usage with x-IMU3 GUI](img/image.png)
 
+You can download the GUI software from the following link: [x-IMU3 GUI](https://x-io.co.uk/x-imu3/)
+
 ## Installation and Usage
 1. Clone this repository:
    ```sh
