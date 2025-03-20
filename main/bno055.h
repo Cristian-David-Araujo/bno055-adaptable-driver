@@ -55,10 +55,28 @@ typedef enum {
     SUSPEND = BNO055_POWER_MODE_SUSPEND
 } BNO055_PowerMode;
 
+
+/**
+ * @brief Structure for save the actual unit of the BNO055 sensor
+ * 
+ */
+typedef struct {
+    uint8_t accel_unit; // Accelerometer unit
+    uint8_t gyro_unit; // Gyroscope unit
+    uint8_t euler_unit; // Euler unit
+    uint8_t temp_unit; // Temperature unit
+    uint8_t ori_unit; // Orientation unit
+} BNO055_UnitSettings_t;
+
+/**
+ * @brief Structure for the BNO055 sensor
+ * 
+ */
 typedef struct {
     uart_t uart_config; // UART configuration structure
     BNO055_OperationMode operation_mode; // Operation mode of the BNO055 sensor
     BNO055_PowerMode power_mode; // Power mode of the BNO055 sensor
+    BNO055_UnitSettings_t unit_settings; // Unit settings of the BNO055 sensor
 
     // Buffer for data
     uint8_t buffer[128]; // Buffer for data
@@ -101,6 +119,16 @@ typedef struct {
  * @param uart_config Pointer to the UART configuration structure
  */
 int8_t BNO055_Init(BNO055_t *bno055, uint8_t gpio_tx, uint8_t gpio_rx);
+
+/**
+ * @brief Get information from the BNO055 sensor
+ * 
+ * This function retrieves the chip ID, software revision ID, page ID, accelerometer revision ID,
+ * magnetometer revision ID, gyroscope revision ID, and bootloader revision ID from the BNO055 sensor.
+ * 
+ * @param bno055 Pointer to the BNO055 sensor structure
+ */
+int8_t BNO055_GetInfo(BNO055_t *bno055);
 
 /**
  * @brief Set the operation mode of the BNO055 sensor
@@ -173,8 +201,6 @@ void BNO055_GetGyro(BNO055_t *bno055, float *gx , float *gy , float *gz); // Get
  */
 void BNO055_GetMagnetometer(BNO055_t *bno055, float *mx , float *my , float *mz);// Get magnetometer data
 
-void BNO055_GetEulerAngles(BNO055_t *bno055, float *yaw , float *pitch , float *roll); // Getorientation data ( Euler angles )
-
 /**
  * @brief Fuctión to send data to the BNO055 sensor for UART communication
  * 
@@ -192,8 +218,10 @@ int8_t BN055_Write(BNO055_t *bno055, uint8_t reg, uint8_t *data, uint8_t len);
  * @param reg Address of the register to read in HEX
  * @param data Pointer to the data to read
  * @param len Length of the data to read in bytes
+ * @param timeout_ms Timeout in milliseconds
+ * @return int8_t
  */
-int8_t BNO055_Read(BNO055_t *bno055, uint8_t reg, uint8_t *data, uint8_t len);
+int8_t BNO055_Read(BNO055_t *bno055, uint8_t reg, uint8_t *data, uint8_t len, uint8_t timeout_ms);
 
 /**
  * @brief Check the ACK value of the BNO055 sensor
@@ -204,28 +232,12 @@ int8_t BNO055_Read(BNO055_t *bno055, uint8_t reg, uint8_t *data, uint8_t len);
 int8_t BNO055_CheckAck(uint8_t *data);
 
 /**
- * @brief Read the accelerometer data from the BNO055 sensor
+ * @brief Read all data from the BNO055 sensor
  * 
- * @param bno055 
+ * @param bno055
  * @return int8_t 
  */
-int8_t BNO055_ReadAccelX(BNO055_t *bno055);
-
-/**
- * @brief Read the accelerometer data from the BNO055 sensor
- * 
- * @param bno055 
- * @return int8_t 
- */
-int8_t BNO055_ReadAccelY(BNO055_t *bno055);
-
-/**
- * @brief Read the accelerometer data from the BNO055 sensor
- * 
- * @param bno055 
- * @return int8_t 
- */
-int8_t BNO055_ReadAccelZ(BNO055_t *bno055);
+int8_t BNO055_ReadAll(BNO055_t *bno055);
 
 /**
  * @brief Set the unit of the BNO055 sensor
@@ -242,7 +254,7 @@ int8_t BNO055_ReadAccelZ(BNO055_t *bno055);
  * @param unit  Bit value for the unit
  * @return uint8_t 
  */
-uint8_t BNO055_SetUnit(BNO055_t *bno055, uint8_t accel_unit, uint8_t gyro_unit, uint8_t euler_unit, uint8_t temp_unit, uint8_t ori_unit);
+int8_t BNO055_SetUnit(BNO055_t *bno055, uint8_t accel_unit, uint8_t gyro_unit, uint8_t euler_unit, uint8_t temp_unit, uint8_t ori_unit);
 
 /**
  * @brief Set the power mode of the BNO055 sensor
@@ -252,5 +264,11 @@ uint8_t BNO055_SetUnit(BNO055_t *bno055, uint8_t accel_unit, uint8_t gyro_unit, 
  * @return int8_t 
  */
 int8_t BNO055_SetPowerMode(BNO055_t *bno055, BNO055_PowerMode mode);
+
+/**
+ * @brief Coverting the data from the BNO055 sensor to the correct units
+ * 
+ */
+void BNO055_ConvertData(BNO055_t *bno055);
 
 #endif // BNO055_H

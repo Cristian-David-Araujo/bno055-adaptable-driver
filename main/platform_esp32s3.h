@@ -98,4 +98,12 @@ int uart_write(uart_t *uart_config, const uint8_t *data, size_t length);
  */
 int uart_read(uart_t *uart_config, uint8_t *buffer, size_t length, int timeout_ms);
 
+/**
+ * @brief Flush the UART buffer
+ * 
+ * @param uart_config Pointer to the uart_t structure with initialized configuration
+ * @return int 0 if the buffer was flushed successfully, or -1 if an error occurred
+ */
+int uart_clear(uart_t *uart_config);
+
 #endif // PLATFORM_ESP32S3_H
