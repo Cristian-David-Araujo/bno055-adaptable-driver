@@ -1,3 +1,27 @@
+## BNO055 Driver
+The core functionalities for interacting with the BNO055 IMU sensor are implemented in `bno055.h`. This header file provides all necessary functions for sensor initialization, data acquisition, and configuration.
+
+## Example Implementation
+An example demonstrating how to use the BNO055 driver with the x-IMU3 GUI is available in `main.c`. This example showcases sensor initialization and data retrieval.
+
+![Example Usage with x-IMU3 GUI](img/image.png)
+
+## Installation and Usage
+1. Clone this repository:
+   ```sh
+   git clone https://github.com/Cristian-David-Araujo/bno055-adaptable-driver.git
+   ```
+2. Include the driver files in your project.
+3. Modify `platform_esp32s3.h` to match your hardware setup if necessary.
+4. Compile and flash the firmware to your ESP32-S3.
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributing
+Contributions are welcome! Feel free to submit pull requests or open issues for any enhancements or bug fixes.
+
+
 # BNO055 Driver with Hardware Abstraction Layer (HAL)
 
 This repository contains a driver for the BNO055 9-axis IMU sensor, developed with a hardware abstraction layer (HAL) to ensure portability across different microcontrollers. While the implementation is designed for the ESP32-S3 using the Espressif SDK, it can be adapted to other platforms with minimal modifications.
@@ -100,24 +124,3 @@ int main(void) {
     return 0;
 }
 ```
-
-## BNO055 Driver
-The core functionalities for interacting with the BNO055 IMU sensor are implemented in `bno055.h`. This header file provides all necessary functions for sensor initialization, data acquisition, and configuration.
-
-## Example Implementation
-An example demonstrating how to use the BNO055 driver is available in `main.c`. This example showcases sensor initialization and data retrieval.
-
-## Installation and Usage
-1. Clone this repository:
-   ```sh
-   git clone https://github.com/yourusername/bno055-driver.git
-   ```
-2. Include the driver files in your project.
-3. Modify `platform_esp32s3.h` to match your hardware setup if necessary.
-4. Compile and flash the firmware to your ESP32-S3.
-
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contributing
-Contributions are welcome! Feel free to submit pull requests or open issues for any enhancements or bug fixes.
