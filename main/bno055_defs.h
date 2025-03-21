@@ -896,6 +896,9 @@
 #define BNO055_TEMP_LEN                           (8)
 #define BNO055_TEMP_REG                           BNO055_TEMP_ADDR
 
+/* Calibration status register*/
+#define BNO055_CALIB_STAT_OK                     (0xFF)
+
 /*Mag_Calib status register*/
 #define BNO055_MAG_CALIB_STAT_POS                 (0)
 #define BNO055_MAG_CALIB_STAT_MSK                 (0X03)

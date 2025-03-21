@@ -143,7 +143,7 @@ int8_t BNO055_Init(BNO055_t *bno055, uint8_t gpio_tx, uint8_t gpio_rx)
     success += BN055_Write(bno055, BNO055_PAGE_ID_ADDR, &data, BNO055_GEN_READ_WRITE_LENGTH);
 
     // Set Unit to m/s^2, rad/s, rad, celcius, Windows orientation
-    success += BNO055_SetUnit(bno055, BNO055_ACCEL_UNIT_MSQ, BNO055_GYRO_UNIT_RPS, BNO055_EULER_UNIT_RAD, BNO055_TEMP_UNIT_CELSIUS, BNO055_ANDROID_ORIENTATION);
+    success += BNO055_SetUnit(bno055, BNO055_ACCEL_UNIT_MSQ, BNO055_GYRO_UNIT_DPS, BNO055_EULER_UNIT_RAD, BNO055_TEMP_UNIT_CELSIUS, BNO055_ANDROID_ORIENTATION);
 
     // Set Power mode to normal
     bno055->power_mode = LOWPOWER;
@@ -178,6 +178,41 @@ int8_t BNO055_Init(BNO055_t *bno055, uint8_t gpio_tx, uint8_t gpio_rx)
     }
 
     return BNO055_ERROR; 
+}
+
+int8_t BNO055_GetCalibrationStatus(BNO055_t *bno055)
+{
+    if (bno055 == NULL) {
+        printf("Error: Null pointer provided\n");
+        return -1; // Error: Null pointer
+    }
+
+    // Read the calibration status from the BNO055 sensor
+    uint8_t calib_status = 0;
+    int8_t success = BNO055_Read(bno055, BNO055_CALIB_STAT_ADDR, &calib_status, 1, 10);
+
+    // Print the calibration status
+    printf("Calibration Status: %02X\n", calib_status);
+
+    if (success != BNO055_SUCCESS) {
+        printf("Error: Failed to read calibration status from the BNO055 sensor\n");
+        return BNO055_ERROR;
+    }
+
+    // Update the calibration status
+    bno055->calib_stat = calib_status;
+
+    if (calib_status == BNO055_CALIB_STAT_OK) {
+        // Update the calibration status
+        printf("Calibration status is OK\n");
+        return BNO055_SUCCESS;
+    } else {
+        printf("Calibration status is not OK\n");
+        return BNO055_ERROR;
+    }
+
+
+    return BNO055_SUCCESS;
 }
 
 int8_t BNO055_GetInfo(BNO055_t *bno055)

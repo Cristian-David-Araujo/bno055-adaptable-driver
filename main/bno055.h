@@ -90,6 +90,10 @@ typedef struct {
     uint8_t gyro_rev_id; // Gyroscope revision ID
     uint8_t bl_rev_id; // Bootloader revision ID
 
+    // Calibration data
+    uint8_t calib_stat; // Calibration status
+    uint8_t test_stat; // Self test status
+
     // data
     float yaw; // Yaw value
     float pitch; // Pitch value
@@ -119,6 +123,16 @@ typedef struct {
  * @param uart_config Pointer to the UART configuration structure
  */
 int8_t BNO055_Init(BNO055_t *bno055, uint8_t gpio_tx, uint8_t gpio_rx);
+
+/**
+ * @brief Get the calibration status of the BNO055 sensor
+ * 
+ * This function retrieves the calibration status of the BNO055 sensor
+ * and returns the system, gyroscope, accelerometer, and magnetometer calibration status.
+ * 
+ * @param bno055 Pointer to the BNO055 sensor structure
+ */
+int8_t BNO055_GetCalibrationStatus(BNO055_t *bno055);
 
 /**
  * @brief Get information from the BNO055 sensor
