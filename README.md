@@ -122,7 +122,7 @@ By following this approach, only the HAL functions require modification, ensurin
 
 int main(void) {
      uart_t uart_config;
-     if (uart_init_with_defaults(&uart_config, 115200, 1024, 17, 16)) {
+     if (uart_init_with_defaults(&uart_config, 115200, 1024, 17, 16) == 0) {
           printf("UART initialized successfully\n");
           
           const uint8_t data[] = "Hello, UART!";

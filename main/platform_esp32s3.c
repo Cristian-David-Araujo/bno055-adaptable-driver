@@ -70,8 +70,6 @@ int uart_init(uart_t *uart_config, uint32_t baud_rate, uint16_t buffer_size, int
         .source_clk = UART_SCLK_DEFAULT,
     };
 
-    
-
 
     int log = 0;
     // Configure UART parameters and check if UART was initialized successfully
