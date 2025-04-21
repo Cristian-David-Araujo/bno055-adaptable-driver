@@ -402,11 +402,11 @@ int8_t BNO055_Read(BNO055_t *bno055, uint8_t reg, uint8_t *data, uint8_t len, ui
     uart_read(&bno055->uart_config, bno055->buffer, len + 2, 20);
 
     // // Print the buffer
-    // printf("Buffer RX: ");
-    // for (uint8_t i = 0; i < len + 2; i++) {
-    //     printf("%02X ", bno055->buffer[i]);
-    // }
-    // printf("\n");
+    printf("Buffer RX: ");
+    for (uint8_t i = 0; i < len + 2; i++) {
+        printf("%02X ", bno055->buffer[i]);
+    }
+    printf("\n");
 
     // Check if the read operation was successful
     if (bno055->buffer[0] == BNO055_READ_SUCCESS && bno055->buffer[1] == len)
@@ -615,3 +615,75 @@ int8_t BNO055_SetPowerMode(BNO055_t *bno055, BNO055_PowerMode mode)
     return BNO055_SUCCESS;
 }
 
+int8_t BNO055_GetCalibrationProfile(BNO055_t *bno055, BNO055_CalibProfile_t *calib_data)
+{
+    if (bno055 == NULL || calib_data == NULL) {
+        printf("Error: Null pointer provided\n");
+        return BNO055_ERROR; // Error: Null pointer
+    }
+
+    // Get the calibration status
+    BNO055_GetCalibrationStatus(bno055);
+    if (bno055->calib_stat != BNO055_CALIB_STAT_OK) {
+        printf("Error: Calibration status is not OK\n");
+        return BNO055_ERROR;
+    }
+
+    /* Save the current operation mode */
+    BNO055_OperationMode current_mode = bno055->operation_mode;
+
+    // Switch to CONFIG_MODE to read calibration profile
+    int8_t success = BNO055_SetOperationMode(bno055, CONFIGMODE);
+    if (success != BNO055_SUCCESS) {
+        printf("Error: Failed to switch to CONFIG_MODE\n");
+        return BNO055_ERROR;
+    }
+    
+
+    // Read sensor offsets
+    uint8_t calib_offsets[22] = {0};
+    success = BNO055_Read(bno055, BNO055_ACCEL_OFFSET_X_LSB_ADDR, calib_offsets, 22, 12);
+    if (success != BNO055_SUCCESS) {
+        printf("Error: Failed to read calibration offsets\n");
+        // Switch back to the previous operation mode
+        BNO055_SetOperationMode(bno055, current_mode);
+        return BNO055_ERROR;
+    }
+
+    // Parse accelerometer offsets
+    calib_data->accel_offset_x = (int16_t)(calib_offsets[1] << 8 | calib_offsets[0]);
+    calib_data->accel_offset_y = (int16_t)(calib_offsets[3] << 8 | calib_offsets[2]);
+    calib_data->accel_offset_z = (int16_t)(calib_offsets[5] << 8 | calib_offsets[4]);
+
+    // Parse magnetometer offsets
+    calib_data->mag_offset_x = (int16_t)(calib_offsets[7] << 8 | calib_offsets[6]);
+    calib_data->mag_offset_y = (int16_t)(calib_offsets[9] << 8 | calib_offsets[8]);
+    calib_data->mag_offset_z = (int16_t)(calib_offsets[11] << 8 | calib_offsets[10]);
+
+    // Parse gyroscope offsets
+    calib_data->gyro_offset_x = (int16_t)(calib_offsets[13] << 8 | calib_offsets[12]);
+    calib_data->gyro_offset_y = (int16_t)(calib_offsets[15] << 8 | calib_offsets[14]);
+    calib_data->gyro_offset_z = (int16_t)(calib_offsets[17] << 8 | calib_offsets[16]);
+
+    // Parse sensor radius
+    calib_data->accel_radius = (int16_t)(calib_offsets[19] << 8 | calib_offsets[18]);
+    calib_data->mag_radius = (int16_t)(calib_offsets[21] << 8 | calib_offsets[20]);
+
+    // Switch back to the previous operation mode
+    success = BNO055_SetOperationMode(bno055, current_mode);
+    if (success != BNO055_SUCCESS) {
+        printf("Error: Failed to switch back to previous operation mode\n");
+        return BNO055_ERROR;
+    }
+
+    // Print the calibration profile HEX
+    printf("------------------------------------------------------\n");
+    printf("Calibration Profile:\n");
+    printf("Accel Offsets X: %04X\n, y: %04X\n, z: %04X\n", calib_data->accel_offset_x, calib_data->accel_offset_y, calib_data->accel_offset_z);
+    printf("Mag Offsets X: %04X\n, y: %04X\n, z: %04X\n", calib_data->mag_offset_x, calib_data->mag_offset_y, calib_data->mag_offset_z);
+    printf("Gyro Offsets X: %04X\n, y: %04X\n, z: %04X\n", calib_data->gyro_offset_x, calib_data->gyro_offset_y, calib_data->gyro_offset_z);
+    printf("Accel Radius: %04X\n", calib_data->accel_radius);
+    printf("Mag Radius: %04X\n", calib_data->mag_radius);
+    printf("------------------------------------------------------\n");
+    return BNO055_SUCCESS;
+}

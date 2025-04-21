@@ -18,6 +18,7 @@
 #define MAX_BRIGHTNESS 5
 
 BNO055_t bno055; // BNO055 sensor structure
+BNO055_CalibProfile_t calib_data; // Calibration data structure
 led_t led; // LED sreucture
 
 void init_sensor() {
@@ -40,15 +41,23 @@ void init_sensor() {
 
     // Wait for the sensor to calibration routine
     // Get calibration status
-    // success = BNO055_GetCalibrationStatus(&bno055);
-    // while (success != BNO055_SUCCESS && bno055.calib_stat != BNO055_CALIB_STAT_OK) {
-    //     printf("Error: Calibration status is not OK\n");
-    //     vTaskDelay(pdMS_TO_TICKS(1000)); // Wait 1 second
-    //     success = BNO055_GetCalibrationStatus(&bno055);
-    // }
+    success = BNO055_GetCalibrationStatus(&bno055);
+    while (success != BNO055_SUCCESS && bno055.calib_stat != BNO055_CALIB_STAT_OK) {
+        printf("Error: Calibration status is not OK\n");
+        vTaskDelay(pdMS_TO_TICKS(1000)); // Wait 1 second
+        success = BNO055_GetCalibrationStatus(&bno055);
+    }
     
     // Change the color of the LED to green if the sensor is initialized
     led_green(&led, MAX_BRIGHTNESS);
+
+    success = BNO055_GetCalibrationProfile(&bno055, &calib_data); // Get calibration profile
+    while (success != BNO055_SUCCESS) {
+        printf("Error: Failed to get calibration profile\n");
+        vTaskDelay(pdMS_TO_TICKS(1000)); // Wait 1 second
+        success = BNO055_GetCalibrationProfile(&bno055, &calib_data);
+    }
+    
 }
 
 void print_sensor_data(void *pvParameters) {
